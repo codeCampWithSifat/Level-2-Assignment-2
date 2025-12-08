@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { authRoutes } from "./modules/Authentication/auth.route";
 import initDataBase from "./config/db";
+import { vehicelRoutes } from "./modules/Vehicles/vehicle.route";
 
 const app = express();
 
@@ -12,6 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 initDataBase();
 // Auth Api
 app.use("/api/v1/auth", authRoutes);
+
+// Vehicle Api
+app.use("/api/v1/vehicles", vehicelRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello Assignment 2");
