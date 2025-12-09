@@ -9,4 +9,5 @@ const auth_1 = __importDefault(require("../../middleware/auth"));
 const booking_controller_1 = require("./booking.controller");
 const router = express_1.default.Router();
 router.post("/", (0, auth_1.default)("admin", "customer"), booking_controller_1.bookingController.createBooking);
+router.get("/", (0, auth_1.default)("admin", "customer"), booking_controller_1.bookingController.getBookingUserAndAdminView);
 exports.bookingRoutes = router;

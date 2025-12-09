@@ -4,5 +4,5 @@ import config from "./config";
 const port = config.port;
 
 app.listen(port, () => {
-  console.log(`Listening To Sami Server Successfully ${port}`);
+  console.log(`Listening To Server Successfully ${port}`);
 });

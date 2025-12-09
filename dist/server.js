@@ -7,5 +7,5 @@ const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./config"));
 const port = config_1.default.port;
 app_1.default.listen(port, () => {
-    console.log(`Listening To Sami Server Successfully ${port}`);
+    console.log(`Listening To Server Successfully ${port}`);
 });
