@@ -9,7 +9,7 @@ const auth = (...roles: string[]) => {
       if (!token) {
         return res.status(500).json({
           success: false,
-          message: "You are not allowed!!",
+          message: "You Have No Token",
         });
       }
 
@@ -31,14 +31,14 @@ const auth = (...roles: string[]) => {
       req.user = decoded;
 
       if (roles.length && !roles.includes(decoded.role as string)) {
-        return res.status(500).json({
+        return res.status(401).json({
           success: false,
           error: "unauthorized!!!",
         });
       }
       next();
     } catch (error: any) {
-      return res.status(500).json({
+      return res.status(401).json({
         success: false,
         message: error.message,
       });
