@@ -3,6 +3,7 @@ import { authRoutes } from "./modules/Authentication/auth.route";
 import initDataBase from "./config/db";
 import { vehicelRoutes } from "./modules/Vehicles/vehicle.route";
 import { userRoutes } from "./modules/Users/users.route";
+import { bookingRoutes } from "./modules/Bookings/booking.route";
 
 const app = express();
 
@@ -21,8 +22,11 @@ app.use("/api/v1/vehicles", vehicelRoutes);
 // Users Api
 app.use("/api/v1/users", userRoutes);
 
+// Bookings Api
+app.use("/api/v1/bookings", bookingRoutes);
+
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello Assignment 2");
+  res.send("Hello Level-2 Assignment-2");
 });
 
 export default app;
