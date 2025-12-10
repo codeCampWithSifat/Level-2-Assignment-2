@@ -14,6 +14,7 @@ const createBooking = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+      errors: error.message,
     });
   }
 };
@@ -34,6 +35,33 @@ const getBookingUserAndAdminView = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+      errors: error.message,
+    });
+  }
+};
+
+const updateBooking = async (req: Request, res: Response) => {
+  try {
+    const { bookingId } = req.params;
+    const user = req.user as JwtPayload;
+    const result = await bookingService.updateBooking(
+      bookingId,
+      user,
+      req.body
+    );
+    return res.status(200).json({
+      success: true,
+      message: result?.message,
+      data: {
+        ...result?.booking,
+        ...(result?.vehicle ? { vehicle: result.vehicle } : {}),
+      },
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+      errors: error.message,
     });
   }
 };
@@ -41,4 +69,5 @@ const getBookingUserAndAdminView = async (req: Request, res: Response) => {
 export const bookingController = {
   createBooking,
   getBookingUserAndAdminView,
+  updateBooking,
 };
