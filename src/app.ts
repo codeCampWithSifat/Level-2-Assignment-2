@@ -26,7 +26,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/bookings", bookingRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello Level-2 Assignment-2");
+  res.send("Hello Level-2 Assignment-2 ...");
 });
 
 export default app;

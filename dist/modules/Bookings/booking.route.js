@@ -10,4 +10,5 @@ const booking_controller_1 = require("./booking.controller");
 const router = express_1.default.Router();
 router.post("/", (0, auth_1.default)("admin", "customer"), booking_controller_1.bookingController.createBooking);
 router.get("/", (0, auth_1.default)("admin", "customer"), booking_controller_1.bookingController.getBookingUserAndAdminView);
+router.put("/:bookingId", (0, auth_1.default)("admin", "customer"), booking_controller_1.bookingController.updateBooking);
 exports.bookingRoutes = router;

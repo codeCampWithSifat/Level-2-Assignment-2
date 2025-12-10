@@ -14,6 +14,7 @@ const getAllUsers = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+      errors: error.message,
     });
   }
 };
@@ -43,6 +44,7 @@ const updateUser = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+      errors: error.message,
     });
   }
 };
@@ -52,13 +54,13 @@ const deleteUser = async (req: Request, res: Response) => {
     const result = await userService.deleteUser(req.params.userId);
     return res.status(200).json({
       success: true,
-      message: "Vehicle retrieved  successfully",
-      data: {},
+      message: "User Deleted successfully",
     });
   } catch (error: any) {
     return res.status(500).json({
       success: false,
       message: error.message,
+      errors: error.message,
     });
   }
 };

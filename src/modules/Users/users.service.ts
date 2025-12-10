@@ -12,7 +12,6 @@ const updateUser = async (
   payload: Record<string, unknown>
 ) => {
   const { name, email, phone, role } = payload;
-  console.log({ name, email, phone, role });
 
   const result = await pool.query(
     `
@@ -31,7 +30,18 @@ const updateUser = async (
 };
 
 const deleteUser = async (id: string | undefined) => {
-  console.log("id", id);
+  const bookings = await pool.query(
+    `
+    SELECT * FROM bookings WHERE customer_id=$1
+    `,
+    [id]
+  );
+  if (bookings.rows[0].status === "active") {
+    throw new Error("Already Have A Booking.. Can't Delete User");
+  }
+  // Delete the user
+  await pool.query(`DELETE FROM users WHERE id=$1`, [id]);
+  return;
 };
 export const userService = {
   getAllUsers,

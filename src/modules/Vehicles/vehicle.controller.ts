@@ -13,6 +13,7 @@ const createVehicel = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+      errors: error.message,
     });
   }
 };
@@ -29,6 +30,7 @@ const getAllVehicels = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+      errors: error.message,
     });
   }
 };
@@ -45,6 +47,7 @@ const getSingleVehicle = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+      errors: error.message,
     });
   }
 };
@@ -64,6 +67,7 @@ const updateVehicle = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+      errors: error.message,
     });
   }
 };
@@ -79,6 +83,7 @@ const deleteVehicle = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+      errors: error.message,
     });
   }
 };

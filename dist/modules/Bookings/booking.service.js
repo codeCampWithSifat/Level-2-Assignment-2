@@ -40,7 +40,7 @@ const createBooking = async (payload) => {
         total_price: Number(booking.total_price),
         vehicle: {
             vehicle_name: getVehicle.rows[0].vehicle_name,
-            daily_rent_price: getVehicle.rows[0].daily_rent_price,
+            daily_rent_price: Number(getVehicle.rows[0].daily_rent_price),
         },
     };
 };
@@ -91,7 +91,63 @@ const getBookingUserAndAdminView = async (user) => {
     `, [user.id]);
     return customerResult.rows;
 };
+const updateBooking = async (id, token, payload) => {
+    const { status } = payload;
+    const bookingResult = await db_1.pool.query(`
+    SELECT * FROM bookings WHERE id=$1
+    `, [id]);
+    if (bookingResult.rows.length === 0) {
+        throw new Error("Booking Data Not Found");
+    }
+    const dateToday = new Date();
+    const startDate = new Date(bookingResult.rows[0].rent_start_date);
+    const endDate = new Date(bookingResult.rows[0].rent_end_date);
+    // customer business login
+    if (token.role === "customer" && status === "cancelled") {
+        if (token.id !== bookingResult.rows[0].customer_id) {
+            throw new Error("You can not cancel the booking");
+        }
+        if (dateToday >= startDate) {
+            throw new Error("You can only cancel before the start date");
+        }
+        const updated = await db_1.pool.query(`UPDATE bookings SET status='cancelled' WHERE id=$1 RETURNING *`, [id]);
+        await db_1.pool.query(`UPDATE vehicles SET availability_status='available' WHERE id=$1`, [bookingResult.rows[0].vehicle_id]);
+        return {
+            message: "Booking cancelled successfully",
+            booking: {
+                ...updated.rows[0],
+                total_price: Number(updated.rows[0].total_price), // convert to number
+            },
+        };
+    }
+    // admin business login
+    if (token.role === "admin" && status === "returned") {
+        const updated = await db_1.pool.query(`UPDATE bookings SET status='returned' WHERE id=$1 RETURNING *`, [id]);
+        await db_1.pool.query(`UPDATE vehicles SET availability_status='available' WHERE id=$1`, [bookingResult.rows[0].vehicle_id]);
+        return {
+            message: "Booking marked as returned. Vehicle is now available",
+            booking: {
+                ...updated.rows[0],
+                total_price: Number(updated.rows[0].total_price), // convert to number
+            },
+            vehicle: { availability_status: "available" },
+        };
+    }
+    if (status === "auto-mark") {
+        if (dateToday < endDate) {
+            throw new Error("Booking period not finished yet");
+        }
+        const updated = await db_1.pool.query(`UPDATE bookings SET status='returned' WHERE id=$1 RETURNING *`, [id]);
+        await db_1.pool.query(`UPDATE vehicles SET availability_status='available' WHERE id=$1`, [bookingResult.rows[0].vehicle_id]);
+        return {
+            message: "Booking auto-marked as returned",
+            booking: updated.rows[0],
+            vehicle: { availability_status: "available" },
+        };
+    }
+};
 exports.bookingService = {
     createBooking,
     getBookingUserAndAdminView,
+    updateBooking,
 };
