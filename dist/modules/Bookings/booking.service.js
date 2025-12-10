@@ -116,7 +116,7 @@ const updateBooking = async (id, token, payload) => {
             message: "Booking cancelled successfully",
             booking: {
                 ...updated.rows[0],
-                total_price: Number(updated.rows[0].total_price), // convert to number
+                total_price: Number(updated.rows[0].total_price),
             },
         };
     }
@@ -128,23 +128,24 @@ const updateBooking = async (id, token, payload) => {
             message: "Booking marked as returned. Vehicle is now available",
             booking: {
                 ...updated.rows[0],
-                total_price: Number(updated.rows[0].total_price), // convert to number
+                total_price: Number(updated.rows[0].total_price),
             },
             vehicle: { availability_status: "available" },
         };
     }
-    if (status === "auto-mark") {
-        if (dateToday < endDate) {
-            throw new Error("Booking period not finished yet");
-        }
-        const updated = await db_1.pool.query(`UPDATE bookings SET status='returned' WHERE id=$1 RETURNING *`, [id]);
-        await db_1.pool.query(`UPDATE vehicles SET availability_status='available' WHERE id=$1`, [bookingResult.rows[0].vehicle_id]);
-        return {
-            message: "Booking auto-marked as returned",
-            booking: updated.rows[0],
-            vehicle: { availability_status: "available" },
-        };
+    if (dateToday < endDate) {
+        throw new Error("Booking period not finished yet");
     }
+    const updated = await db_1.pool.query(`UPDATE bookings SET status='returned' WHERE id=$1 RETURNING *`, [id]);
+    await db_1.pool.query(`UPDATE vehicles SET availability_status='available' WHERE id=$1`, [bookingResult.rows[0].vehicle_id]);
+    return {
+        message: "Booking auto-marked as returned",
+        booking: {
+            ...updated.rows[0],
+            total_price: Number(updated.rows[0].total_price),
+        },
+        vehicle: { availability_status: "available" },
+    };
 };
 exports.bookingService = {
     createBooking,

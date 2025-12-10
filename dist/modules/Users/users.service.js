@@ -8,7 +8,6 @@ const getAllUsers = async () => {
 };
 const updateUser = async (id, payload) => {
     const { name, email, phone, role } = payload;
-    console.log({ name, email, phone, role });
     const result = await db_1.pool.query(`
        UPDATE users
        SET
@@ -21,7 +20,15 @@ const updateUser = async (id, payload) => {
     return result;
 };
 const deleteUser = async (id) => {
-    console.log("id", id);
+    const bookings = await db_1.pool.query(`
+    SELECT * FROM bookings WHERE customer_id=$1
+    `, [id]);
+    if (bookings.rows[0].status === "active") {
+        throw new Error("Already Have A Booking.. Can't Delete User");
+    }
+    // Delete the user
+    await db_1.pool.query(`DELETE FROM users WHERE id=$1`, [id]);
+    return;
 };
 exports.userService = {
     getAllUsers,
