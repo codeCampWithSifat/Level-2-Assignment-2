@@ -65,15 +65,14 @@ const updateVehicle = async (id, payload) => {
 };
 const deleteVehicle = async (id) => {
     const vehicle = await db_1.pool.query(`
-    SELECT * FROM vehicles WHERE id=$1
+    SELECT * FROM bookings WHERE vehicle_id=$1
     `, [id]);
-    if (vehicle.rows[0].availability_status === "booked") {
-        throw new Error("Vehicle Booked Now. It can't delete");
+    if (vehicle.rows[0].status === "active") {
+        throw new Error("Vehicle Active Now. It can't delete");
     }
-    const result = await db_1.pool.query(`
+    await db_1.pool.query(`
     DELETE FROM vehicles WHERE id=$1
     `, [id]);
-    return result;
 };
 exports.vehicleService = {
     createVehicel,

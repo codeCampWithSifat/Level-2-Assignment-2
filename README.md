@@ -28,3 +28,8 @@ A backend API for a vehicle rental management system that handles:
 
 ---
 
+```
+<!-- GitHub Repo: Your GitHub Repo Link -->
+Live Deployment: https://assignment-2-beta-blond.vercel.app
+```
+
